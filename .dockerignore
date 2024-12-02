@@ -1,0 +1,17 @@
+# Git
+.git
+.gitignore
+.gitattributes
+
+# Virtual environment
+venv/
+.venv/
+env/
+__pycache__/
+
+
+# Cache Python
+*.pyc
+*.pyo
+*.pyd
+__pycache__/

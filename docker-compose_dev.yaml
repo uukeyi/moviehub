@@ -1,0 +1,59 @@
+version: '3.8'
+services:
+    db:
+      image: postgres
+      container_name:
+        postgres_server
+      ports:
+       - "5432:5432"
+      networks:
+       - local_network
+      volumes:
+       - db_data:/var/lib/postgresql/data
+       - ./init_db.sql:/docker-entrypoint-initdb.d/init_db.sql
+      environment:
+        POSTGRES_DB: ${POSTGRES_DB}
+        POSTGRES_USER: ${POSTGRES_USER}
+        POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+
+    pg_admin:
+      image: dpage/pgadmin4
+      environment:
+        PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
+        PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
+      networks:
+        - local_network
+      ports:
+        - "8080:80"
+      depends_on:
+        - db
+
+    web:
+      working_dir: /app
+      container_name:
+        moviehub
+      image: python
+      ports:
+        - "8000:8000"
+
+      networks:
+        - local_network
+      command: >
+        bash -c "
+        apt-get update &&
+        apt-get install -y gettext &&
+        pip install -r requirements_test.txt &&
+        pip install -r requirements_dev.txt &&
+        python manage.py makemigrations &&
+        python manage.py migrate &&
+        python manage.py createsuperuser --noinput &&
+        python manage.py runserver 0.0.0.0:8000"
+      volumes:
+        - ".:/app"
+      depends_on:
+        - db
+volumes:
+  db_data:
+networks:
+  local_network:
+    driver: bridge

@@ -1,0 +1,30 @@
+# Django #
+*.log
+*.pot
+*.pyc
+__pycache__
+db.sqlite3
+media
+
+
+# Test
+.pytest_cache/
+
+# Docker
+.docker-compose_prod.yaml
+
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# sftp configuration file
+sftp-config.json
+
+
+# VSCode
+.vscode
